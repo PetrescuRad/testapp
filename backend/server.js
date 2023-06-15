@@ -3,6 +3,7 @@ const express = require('express');
 //const { Pool } = require('pg');
 const {constructPool, getPool} = require('./database');
 const contactsRouter = require('./routes/contacts');
+const tradesRouter = require('./routes/trades');
 const cors = require('cors');
 const app = express();
 constructPool();
@@ -27,14 +28,16 @@ pool.connect((err, client, done) => {
     done();
   }
 });
-console.log(pool);
+//console.log(pool);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Mount the contacts router
-app.use('/contacts', contactsRouter);
+//app.use('/contacts', contactsRouter);
+app.use('/trades', tradesRouter);
+
 
 // Start the server
 const port = process.env.PORT || 8000;
