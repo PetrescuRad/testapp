@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
-import { ContactPageSharp } from '@mui/icons-material';
 
 const ChartVisual = () => {
-  const chartRef = useRef(null);
+  const chartRef1 = useRef(null);
+  const chartRef2 = useRef(null);
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -22,27 +22,25 @@ const ChartVisual = () => {
 
   useEffect(() => {
     if (chartData.length > 0) {
-      createChart();
+      createChart1();
+      createChart2();
     }
   }, [chartData]);
 
-  const createChart = () => {
-    const ctx = chartRef.current.getContext('2d');
+  const createChart1 = () => {
+    const ctx = chartRef1.current.getContext('2d');
 
-    if (typeof chartRef.current.chart !== 'undefined') {
-      chartRef.current.chart.destroy();
+    if (typeof chartRef1.current.chart !== 'undefined') {
+      chartRef1.current.chart.destroy();
     }
 
     const formattedData = chartData.map((trade) => ({
       label: new Date(trade.Date).toLocaleDateString('en-CA'),
-      //value: (trade.BTC / trade.TotalBTC) * trade.BuyPrice,
       value: trade.BTC,
     }));
 
     const chartLabels = formattedData.map((dataPoint) => dataPoint.label);
     const chartValues = formattedData.map((dataPoint) => dataPoint.value);
-    // console.log(chartLabels);
-    // console.log(chartValues);
 
     const chartDataConfig = {
       labels: chartLabels,
@@ -80,16 +78,89 @@ const ChartVisual = () => {
       },
     };
 
-    chartRef.current.chart = new Chart(ctx, {
+    chartRef1.current.chart = new Chart(ctx, {
       type: 'bar',
       data: chartDataConfig,
       options: chartOptions,
     });
   };
 
+  const createChart2 = () => {
+    const ctx = chartRef2.current.getContext('2d');
+
+    if (typeof chartRef2.current.chart !== 'undefined') {
+      chartRef2.current.chart.destroy();
+    }
+
+    const formattedData = chartData.map((trade) => ({
+      label: new Date(trade.Date).toLocaleDateString('en-CA'),
+      buyPrice: trade.BuyPrice,
+      onlinePrice: trade.OnlinePrice,
+    }));
+
+    const chartLabels = formattedData.map((dataPoint) => dataPoint.label);
+    const chartBuyPrice = formattedData.map((dataPoint) => dataPoint.buyPrice);
+    const chartOnlinePrice = formattedData.map((dataPoint) => dataPoint.onlinePrice);
+
+    const chartDataConfig = {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Buy Price',
+          data: chartBuyPrice,
+          backgroundColor: 'rgba(192, 75, 75, 1)',
+          borderColor: 'rgba(192, 75, 75, 1)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Online Price',
+          data: chartOnlinePrice,
+          backgroundColor: 'rgba(0, 0, 0, 1)',
+          borderColor: 'rgba(0, 0, 0, 1)',
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Date',
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Price ($)',
+          },
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      },
+    };
+
+    chartRef2.current.chart = new Chart(ctx, {
+      type: 'line',
+      data: chartDataConfig,
+      options: chartOptions,
+    });
+  };
+
   return (
-    <div style={{ width: '800px', height: '400px' }}>
-      <canvas ref={chartRef} />
+    <div style={{ display: 'flex', gap: '100px' }}>
+      <div style={{ width: '700px', height: '600px', textAlign: 'center' }}>
+        <h2>Amount of BTC purchased per day</h2>
+        <canvas ref={chartRef1} />
+      </div>
+      <div style={{ width: '700px', height: '600px', textAlign: 'center' }}>
+        <h2>Buy price versus Online price</h2>
+        <canvas ref={chartRef2} />
+      </div>
     </div>
   );
 };
