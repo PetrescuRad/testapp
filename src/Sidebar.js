@@ -24,6 +24,7 @@ export default function Sidebar() {
           </IconButton>
           <Button component={Link} to="/" color="inherit">Dashboard</Button>
           <Button component={Link} to="/form" color="inherit">Submit Trade</Button>
+          <Button component={Link} to="/chart" color="inherit">Data Visuals</Button>
         </Toolbar>
       </AppBar>
     </Box>

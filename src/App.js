@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import DisplayData from './DisplayData';
 import SubmitForm from './SubmitForm';
+import ChartVisual from './ChartVisual';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<DisplayData />} />
             <Route path="/form" element={<SubmitForm />} />
+            <Route path="/chart" element={<ChartVisual />} />
           </Routes>
         </div>
       </div>
